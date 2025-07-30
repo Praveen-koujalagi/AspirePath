@@ -4,7 +4,7 @@ AspirePath is an AI-powered career guidance platform designed to help users iden
 
 ## ✨ Key Features
 
-- **🔐 Connect to AspirePath**: Secure user authentication with enhanced glassmorphism UI design and MongoDB integration.
+- **🔐 Connect to AspirePath**: Secure user authentication with enhanced glassmorphism UI design and Session State data persistence.
 - **🧠 AI-Powered Skill Assessment**: Advanced skill extraction from resumes and comprehensive quiz system with 100+ questions across multiple technologies.
 - **🎯 Smart Career Prediction**: Sophisticated algorithm that suggests diverse career paths based on skill matching (85.7% diversity rate achieved).
 - **📋 Interactive Skill Quiz**: Dynamic quiz engine with local question bank and API fallback for comprehensive skill evaluation.
@@ -18,7 +18,6 @@ AspirePath is an AI-powered career guidance platform designed to help users iden
 
 ### Prerequisites
 - Python 3.8 or higher
-- MongoDB (local installation or MongoDB Atlas)
 - Git
 
 ### Quick Start
@@ -38,16 +37,30 @@ AspirePath is an AI-powered career guidance platform designed to help users iden
    pip install -r requirements.txt
    ```
 
-4. **Start MongoDB service** (if using local MongoDB)
-
-5. **Launch the application:**
+4. **Launch the application:**
    ```bash
    streamlit run app.py
    ```
 
-6. **Access the application:**
+5. **Access the application:**
    - Open your browser and go to `http://localhost:8501`
    - Click "Get Started" to begin your career journey!
+
+## ☁️ Streamlit Cloud Deployment
+
+AspirePath is now optimized for **instant deployment** on Streamlit Cloud:
+
+### 🚀 One-Click Deployment
+1. **Fork this repository** to your GitHub account
+2. **Visit** [share.streamlit.io](https://share.streamlit.io)
+3. **Connect your GitHub** and select the AspirePath repository
+4. **Deploy instantly** - no additional configuration needed!
+
+### ✨ Deployment Benefits
+- **Zero Setup**: No external database or services required
+- **Instant Access**: App ready in minutes with full functionality
+- **Session Persistence**: User data maintained throughout their session
+- **Cost-Free**: Perfect for demos, testing, and personal use
 
 ## 📁 Project Structure
 
@@ -56,7 +69,8 @@ AspirePath/
 ├── app.py                    # Main Streamlit application with enhanced UI
 ├── config.py                 # Configuration templates for diverse skill categories
 ├── core.py                   # Advanced career prediction algorithms and skill matching
-├── helpers.py                # Utility functions for data processing and MongoDB operations
+├── helpers_session.py        # Session State database implementation for user data and progress
+├── helpers.py                # Legacy utility functions (replaced by helpers_session.py)
 ├── project_suggester.py      # AI-powered project recommendations based on skills
 ├── quiz_engine.py            # Dynamic quiz system with local and API question sources
 ├── real_mcq_bank.json        # Comprehensive question bank (100+ questions)
@@ -71,7 +85,7 @@ AspirePath/
 - **app.py**: Enhanced Streamlit interface with glassmorphism design, session management, and seamless navigation
 - **core.py**: Sophisticated career prediction engine with 85.7% diversity rate in career suggestions
 - **quiz_engine.py**: Dynamic quiz system supporting multiple question sources and skill assessment
-- **helpers.py**: MongoDB integration, data validation, and progress tracking utilities
+- **helpers_session.py**: Session State database implementation for user management, quiz results, and progress tracking
 
 ## 🛠️ Technologies Used
 
@@ -86,8 +100,8 @@ AspirePath/
 - **Session Management**: Secure user state handling
 
 ### Database & Storage
-- **MongoDB**: NoSQL database for user data, quiz results, and progress tracking
-- **pymongo**: Python MongoDB driver for database operations
+- **Session State**: Streamlit's built-in session state for data persistence during user sessions
+- **Zero Dependencies**: No external database required - perfect for quick deployment
 
 ### Additional Libraries
 - **PyPDF2**: PDF resume parsing
@@ -127,6 +141,12 @@ AspirePath/
    - **AI Suggestions**: Receive personalized recommendations for continued growth
 
 ## 🎨 Recent Enhancements
+
+### Session State Database Implementation
+- **Zero Dependencies**: Replaced MongoDB with Streamlit Session State for immediate deployment
+- **Cloud-Ready**: Perfect for Streamlit Cloud deployment without external database setup
+- **Full Functionality**: Complete user management, quiz results, and progress tracking
+- **Development Friendly**: Instant setup with no configuration required
 
 ### Authentication Page Redesign
 - **Modern Branding**: "Connect to AspirePath" with inspiring tagline

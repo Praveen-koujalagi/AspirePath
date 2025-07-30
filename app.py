@@ -2,10 +2,14 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from streamlit_lottie import st_lottie
 from core import assess_skills, select_goal, generate_roadmap, predict_career, get_career_matches
-from helpers import parse_resume, fetch_youtube_resources, store_quiz_results, validate_email, validate_password, validate_name, store_progress_achievement
+from helpers_session import (
+    parse_resume, fetch_youtube_resources, store_quiz_results, 
+    validate_email, validate_password, validate_name, store_progress_achievement,
+    create_user, authenticate_user, find_user_by_email, get_session_stats, 
+    init_session_state_db, get_user_progress_stats
+)
 from project_suggester import suggest_projects
 from quiz_engine import load_questions, run_quiz, fetch_questions_from_api
-from pymongo import MongoClient
 import hashlib
 import requests
 import json
@@ -17,6 +21,9 @@ if 'user_name' not in st.session_state:
     st.session_state.user_name = ""
 if 'user_email' not in st.session_state:
     st.session_state.user_email = ""
+
+# Initialize session state database
+init_session_state_db()
 
 # Initialize user_skills as an empty list
 user_skills = []
@@ -61,11 +68,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# MongoDB setup
-client = MongoClient("mongodb://localhost:27017/")
-db = client["aspirepath"]
-users_collection = db["users"]
 
 # Enhanced styling for a professional and sophisticated UI
 st.markdown(
@@ -764,8 +766,7 @@ if page_clean == "Log In / Sign Up":
                     if not validate_email(login_email):
                         st.error("❌ Please enter a valid email address.")
                     else:
-                        hashed_password = hashlib.sha256(login_password.encode()).hexdigest()
-                        user = users_collection.find_one({"email": login_email, "password": hashed_password})
+                        user = authenticate_user(login_email, login_password)
                         if user:
                             # Set session state for authentication
                             st.session_state.authenticated = True
@@ -866,28 +867,25 @@ if page_clean == "Log In / Sign Up":
                     for error in validation_errors:
                         st.error(f"❌ {error}")
                 else:
-                    # Check if user already exists
-                    if users_collection.find_one({"email": signup_email}):
+                    # Check if user already exists using session state
+                    if find_user_by_email(signup_email):
                         st.error("❌ An account with this email already exists. Please use a different email or try logging in.")
                     else:
                         try:
-                            hashed_password = hashlib.sha256(signup_password.encode()).hexdigest()
-                            user_data = {
-                                "name": signup_name.strip(),
-                                "email": signup_email.lower().strip(),
-                                "password": hashed_password,
-                                "created_at": st.session_state.get("current_time", "2024-01-01")
-                            }
-                            users_collection.insert_one(user_data)
+                            # Create user using session state
+                            success, message = create_user(signup_name.strip(), signup_email.lower().strip(), signup_password)
                             
-                            # Automatically authenticate the new user
-                            st.session_state.authenticated = True
-                            st.session_state.user_name = signup_name.strip()
-                            st.session_state.user_email = signup_email.lower().strip()
-                            
-                            st.success("🎉 Account created successfully! Welcome to AspirePath!")
-                            st.balloons()
-                            st.rerun()  # Refresh to show authenticated menu
+                            if success:
+                                # Automatically authenticate the new user
+                                st.session_state.authenticated = True
+                                st.session_state.user_name = signup_name.strip()
+                                st.session_state.user_email = signup_email.lower().strip()
+                                
+                                st.success("🎉 Account created successfully! Welcome to AspirePath!")
+                                st.balloons()
+                                st.rerun()  # Refresh to show authenticated menu
+                            else:
+                                st.error(f"❌ {message}")
                         except Exception as e:
                             st.error(f"❌ An error occurred while creating your account. Please try again.")
     
@@ -1554,9 +1552,6 @@ if page_clean == "Progress Tracker":
     st.header("📈 Weekly Progress Tracker")
     st.markdown(f"Welcome back, **{st.session_state.user_name}**! Track your learning journey here.")
 
-    # Initialize database connection
-    progress_collection = db["progress"]
-    
     # Create two columns for better layout
     col1, col2 = st.columns([2, 1])
     
@@ -1622,13 +1617,20 @@ if page_clean == "Progress Tracker":
                         "created_at": datetime.now()
                     }
                     
-                    # Store in database
-                    progress_collection.insert_one(achievement_data)
-                    st.success("🎉 Achievement logged successfully!")
-                    st.balloons()
+                    # Store using session state
+                    success = store_progress_achievement(
+                        st.session_state.user_email, 
+                        st.session_state.user_name, 
+                        achievement_data
+                    )
                     
-                    # Clear form
-                    st.rerun()
+                    if success:
+                        st.success("🎉 Achievement logged successfully!")
+                        st.balloons()
+                        # Clear form
+                        st.rerun()
+                    else:
+                        st.error("❌ Error saving achievement. Please try again.")
                     
                 except Exception as e:
                     st.error(f"❌ Error saving achievement: {str(e)}")
@@ -1639,7 +1641,9 @@ if page_clean == "Progress Tracker":
         # Quick stats
         st.subheader("📊 Your Stats")
         try:
-            user_achievements = list(progress_collection.find({"user_id": st.session_state.user_email}))
+            # Get user progress from session state
+            progress_stats = get_user_progress_stats(st.session_state.user_email)
+            user_achievements = progress_stats["achievements"]
             
             if user_achievements:
                 total_achievements = len(user_achievements)
@@ -1670,9 +1674,12 @@ if page_clean == "Progress Tracker":
     # Recent achievements
     st.subheader("📝 Recent Achievements")
     try:
-        recent_achievements = list(progress_collection.find(
-            {"user_id": st.session_state.user_email}
-        ).sort("date", -1).limit(5))
+        # Get recent achievements from session state
+        progress_stats = get_user_progress_stats(st.session_state.user_email)
+        all_achievements = progress_stats["achievements"]
+        
+        # Sort by date and get recent 5
+        recent_achievements = sorted(all_achievements, key=lambda x: x.get("date", ""), reverse=True)[:5]
         
         if recent_achievements:
             for i, achievement in enumerate(recent_achievements):
@@ -1751,12 +1758,11 @@ if page_clean == "Progress Dashboard":
     st.header("📊 Progress Dashboard")
     st.markdown(f"Comprehensive progress overview for **{st.session_state.user_name}**")
 
-    # Get user's progress data
-    progress_collection = db["progress"]
+    # Get user's progress data from session state
+    progress_stats = get_user_progress_stats(st.session_state.user_email)
+    user_achievements = progress_stats["achievements"]
     
-    try:
-        user_achievements = list(progress_collection.find({"user_id": st.session_state.user_email}).sort("date", 1))
-        
+    try:        
         if not user_achievements:
             st.info("📝 No progress data found. Start logging your achievements in the Progress Tracker!")
             st.markdown("### 🚀 Get Started")
