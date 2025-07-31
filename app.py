@@ -69,41 +69,50 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Simple, reliable styling with black background
+# Complete black theme for full visibility
 st.markdown(
     """
     <style>
-    /* Force black background and white text for visibility */
-    .main {
+    /* FORCE BLACK BACKGROUND EVERYWHERE */
+    .main, .block-container, div[data-testid="stAppViewContainer"], 
+    div[data-testid="stMain"], section[data-testid="stSidebar"] {
         background-color: #000000 !important;
         color: white !important;
     }
     
-    /* Ensure all elements are visible */
-    .main * {
-        color: white !important;
-    }
-    
-    /* Streamlit containers */
-    .block-container {
+    /* SIDEBAR - Complete black theme */
+    .css-1d391kg, .css-1aumxhk, div[data-testid="stSidebar"] > div,
+    .sidebar .sidebar-content, section[data-testid="stSidebar"] * {
         background-color: #000000 !important;
         color: white !important;
     }
     
-    /* Headers */
-    h1, h2, h3, h4, h5, h6 {
+    /* SIDEBAR specific elements */
+    section[data-testid="stSidebar"] {
+        background-color: #000000 !important;
+    }
+    
+    section[data-testid="stSidebar"] > div:first-child {
+        background-color: #000000 !important;
+    }
+    
+    /* ALL TEXT ELEMENTS - Force white */
+    *, p, div, span, label, li, td, th, a, 
+    .stMarkdown, .stText, .element-container {
+        color: white !important;
+        background-color: transparent !important;
+    }
+    
+    /* HEADERS - Gold color for visibility */
+    h1, h2, h3, h4, h5, h6, .stTitle {
         color: #FFD700 !important;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.8) !important;
+        background-color: transparent !important;
     }
     
-    /* Paragraphs and text */
-    p, div, span, label {
-        color: white !important;
-    }
-    
-    /* Buttons */
+    /* BUTTONS - Dark with gold border */
     .stButton > button {
-        background-color: #333333 !important;
+        background-color: #1a1a1a !important;
         color: white !important;
         border: 2px solid #FFD700 !important;
         border-radius: 10px !important;
@@ -114,41 +123,54 @@ st.markdown(
     .stButton > button:hover {
         background-color: #FFD700 !important;
         color: black !important;
+        transform: scale(1.05);
     }
     
-    /* Input fields */
-    .stTextInput > div > div > input {
-        background-color: #333333 !important;
+    /* INPUT FIELDS - Dark theme */
+    .stTextInput > div > div > input, .stTextArea > div > div > textarea,
+    .stSelectbox > div > div > select, .stNumberInput > div > div > input {
+        background-color: #1a1a1a !important;
         color: white !important;
-        border: 2px solid #666666 !important;
+        border: 2px solid #444444 !important;
         border-radius: 8px !important;
     }
     
-    .stTextInput > div > div > input:focus {
+    .stTextInput > div > div > input:focus, .stTextArea > div > div > textarea:focus {
         border-color: #FFD700 !important;
         box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3) !important;
     }
     
-    /* Text input labels */
-    .stTextInput label {
+    /* INPUT LABELS */
+    .stTextInput label, .stTextArea label, .stSelectbox label,
+    .stNumberInput label, .stFileUploader label {
         color: #FFD700 !important;
         font-weight: bold !important;
     }
     
-    /* Sidebar */
-    .css-1d391kg {
-        background-color: #111111 !important;
+    /* TABS - Dark theme */
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: #1a1a1a !important;
+        border-radius: 10px !important;
     }
     
-    /* Sidebar content */
-    .sidebar .sidebar-content {
-        background-color: #111111 !important;
+    .stTabs [data-baseweb="tab"] {
+        background-color: #333333 !important;
         color: white !important;
+        border: 1px solid #666666 !important;
+        border-radius: 5px !important;
+        margin: 0 2px !important;
     }
     
-    /* Option menu styling */
-    .nav-link {
+    .stTabs [aria-selected="true"] {
+        background-color: #FFD700 !important;
+        color: black !important;
+        font-weight: bold !important;
+    }
+    
+    /* OPTION MENU - Force dark theme */
+    .nav-link, .nav-link-selected, div[data-testid="stSidebar"] .nav-link {
         color: white !important;
+        background-color: #1a1a1a !important;
     }
     
     .nav-link-selected {
@@ -156,60 +178,122 @@ st.markdown(
         color: black !important;
     }
     
-    /* Tabs */
-    .stTabs [data-baseweb="tab-list"] {
-        background-color: #222222 !important;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        background-color: #333333 !important;
+    /* STREAMLIT SPECIFIC ELEMENTS */
+    .stAlert, .stSuccess, .stError, .stWarning, .stInfo {
         color: white !important;
-        border: 1px solid #666666 !important;
+        font-weight: bold !important;
     }
     
-    .stTabs [aria-selected="true"] {
-        background-color: #FFD700 !important;
-        color: black !important;
-    }
-    
-    /* Cards and containers */
-    .card, .feature-card {
-        background-color: #222222 !important;
-        border: 2px solid #444444 !important;
-        border-radius: 15px !important;
-        padding: 1.5rem !important;
-        margin: 1rem 0 !important;
-    }
-    
-    /* Success/Error messages */
     .stSuccess {
         background-color: #006600 !important;
-        color: white !important;
+        border: 1px solid #00AA00 !important;
     }
     
     .stError {
-        background-color: #CC0000 !important;
-        color: white !important;  
+        background-color: #660000 !important;
+        border: 1px solid #AA0000 !important;
     }
     
     .stWarning {
-        background-color: #FF8800 !important;
-        color: white !important;
+        background-color: #663300 !important;
+        border: 1px solid #AA5500 !important;
     }
     
     .stInfo {
-        background-color: #0066CC !important;
+        background-color: #003366 !important;
+        border: 1px solid #0055AA !important;
+    }
+    
+    /* CARDS AND CONTAINERS */
+    .element-container, .stContainer, .stColumn {
+        background-color: transparent !important;
+    }
+    
+    /* FILE UPLOADER */
+    .stFileUploader {
+        background-color: #1a1a1a !important;
+        border: 2px dashed #666666 !important;
+        border-radius: 10px !important;
         color: white !important;
     }
     
-    /* Force visibility for all elements */
-    * {
+    /* SELECTBOX */
+    .stSelectbox > div > div {
+        background-color: #1a1a1a !important;
         color: white !important;
     }
     
-    /* Override any conflicting styles */
-    .main .block-container {
-        background-color: #000000 !important;
+    /* RADIO BUTTONS */
+    .stRadio > label {
+        color: white !important;
+    }
+    
+    /* CHECKBOX */
+    .stCheckbox > label {
+        color: white !important;
+    }
+    
+    /* SLIDER */
+    .stSlider > label {
+        color: #FFD700 !important;
+    }
+    
+    /* EXPANDER */
+    .streamlit-expanderHeader {
+        background-color: #1a1a1a !important;
+        color: white !important;
+        border: 1px solid #444444 !important;
+    }
+    
+    .streamlit-expanderContent {
+        background-color: #0d0d0d !important;
+        color: white !important;
+        border: 1px solid #444444 !important;
+    }
+    
+    /* METRIC */
+    .metric-container {
+        background-color: #1a1a1a !important;
+        color: white !important;
+        border: 1px solid #444444 !important;
+        border-radius: 10px !important;
+        padding: 1rem !important;
+    }
+    
+    /* DATAFRAME */
+    .stDataFrame {
+        background-color: #1a1a1a !important;
+        color: white !important;
+    }
+    
+    /* ENSURE NO WHITE BACKGROUNDS */
+    div, section, article, main, header, footer {
+        background-color: transparent !important;
+    }
+    
+    /* FORCE VISIBILITY FOR ALL CONTENT */
+    .main .block-container * {
+        color: white !important;
+    }
+    
+    /* SIDEBAR CONTENT OVERRIDE */
+    section[data-testid="stSidebar"] * {
+        color: white !important;
+    }
+    
+    /* MARKDOWN CONTENT */
+    .stMarkdown, .stText {
+        color: white !important;
+    }
+    
+    /* SPECIAL STYLING FOR FEATURE CARDS */
+    .feature-card, .card {
+        background-color: #1a1a1a !important;
+        border: 2px solid #333333 !important;
+        border-radius: 15px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+        color: white !important;
     }
     </style>
     """, unsafe_allow_html=True
