@@ -69,84 +69,147 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enhanced styling - FIXED for visibility
+# Simple, reliable styling with black background
 st.markdown(
     """
     <style>
-    /* Basic styling to ensure content is visible */
+    /* Force black background and white text for visibility */
     .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
+        background-color: #000000 !important;
+        color: white !important;
     }
     
-    /* Ensure all text is visible */
+    /* Ensure all elements are visible */
     .main * {
         color: white !important;
     }
     
-    /* Button styling */
-    .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Streamlit containers */
+    .block-container {
+        background-color: #000000 !important;
         color: white !important;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 15px;
-        font-weight: 600;
-        width: 100%;
-        border: 2px solid rgba(255,255,255,0.2);
+    }
+    
+    /* Headers */
+    h1, h2, h3, h4, h5, h6 {
+        color: #FFD700 !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8) !important;
+    }
+    
+    /* Paragraphs and text */
+    p, div, span, label {
+        color: white !important;
+    }
+    
+    /* Buttons */
+    .stButton > button {
+        background-color: #333333 !important;
+        color: white !important;
+        border: 2px solid #FFD700 !important;
+        border-radius: 10px !important;
+        padding: 0.75rem 1.5rem !important;
+        font-weight: bold !important;
     }
     
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-    }
-    
-    /* Input styling */
-    .stTextInput > div > div > input {
-        background: rgba(255, 255, 255, 0.95) !important;
+        background-color: #FFD700 !important;
         color: black !important;
-        border: 2px solid rgba(102, 126, 234, 0.3) !important;
-        border-radius: 10px !important;
-        padding: 0.75rem !important;
     }
     
-    .stTextInput label {
+    /* Input fields */
+    .stTextInput > div > div > input {
+        background-color: #333333 !important;
         color: white !important;
-        font-weight: 600 !important;
+        border: 2px solid #666666 !important;
+        border-radius: 8px !important;
     }
     
-    /* Card styling */
-    .card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 2rem;
-        border: 1px solid rgba(255,255,255,0.2);
-        margin: 1rem 0;
+    .stTextInput > div > div > input:focus {
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3) !important;
     }
     
-    /* Tab styling */
+    /* Text input labels */
+    .stTextInput label {
+        color: #FFD700 !important;
+        font-weight: bold !important;
+    }
+    
+    /* Sidebar */
+    .css-1d391kg {
+        background-color: #111111 !important;
+    }
+    
+    /* Sidebar content */
+    .sidebar .sidebar-content {
+        background-color: #111111 !important;
+        color: white !important;
+    }
+    
+    /* Option menu styling */
+    .nav-link {
+        color: white !important;
+    }
+    
+    .nav-link-selected {
+        background-color: #FFD700 !important;
+        color: black !important;
+    }
+    
+    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 0.5rem;
-        border-radius: 20px;
-        margin-bottom: 2rem;
+        background-color: #222222 !important;
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: transparent;
-        border-radius: 15px;
-        color: rgba(255, 255, 255, 0.8);
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        border: none;
+        background-color: #333333 !important;
+        color: white !important;
+        border: 1px solid #666666 !important;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        background-color: #FFD700 !important;
+        color: black !important;
+    }
+    
+    /* Cards and containers */
+    .card, .feature-card {
+        background-color: #222222 !important;
+        border: 2px solid #444444 !important;
+        border-radius: 15px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+    }
+    
+    /* Success/Error messages */
+    .stSuccess {
+        background-color: #006600 !important;
         color: white !important;
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .stError {
+        background-color: #CC0000 !important;
+        color: white !important;  
+    }
+    
+    .stWarning {
+        background-color: #FF8800 !important;
+        color: white !important;
+    }
+    
+    .stInfo {
+        background-color: #0066CC !important;
+        color: white !important;
+    }
+    
+    /* Force visibility for all elements */
+    * {
+        color: white !important;
+    }
+    
+    /* Override any conflicting styles */
+    .main .block-container {
+        background-color: #000000 !important;
     }
     </style>
     """, unsafe_allow_html=True
