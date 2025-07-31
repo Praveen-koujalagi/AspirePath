@@ -69,362 +69,68 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enhanced styling for a professional and sophisticated UI
+# Enhanced styling - FIXED for visibility
 st.markdown(
     """
     <style>
-    /* Hide Streamlit header and menu */
-    header[data-testid="stHeader"] {
-        height: 0;
-        display: none;
-    }
-    
-    /* Remove top padding */
-    .block-container {
-        padding-top: 0rem !important;
-    }
-    
-    /* Professional main background with subtle pattern */
+    /* Basic styling to ensure content is visible */
     .main {
-        background: 
-            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
-            linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6B73FF 100%);
-        background-attachment: fixed;
-        background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
-        position: relative;
     }
     
-    /* Add subtle animated background overlay */
-    .main::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: 
-            linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.02) 50%, transparent 70%),
-            linear-gradient(-45deg, transparent 30%, rgba(255,255,255,0.01) 50%, transparent 70%);
-        background-size: 60px 60px, 60px 60px;
-        animation: backgroundMove 20s linear infinite;
-        pointer-events: none;
-        z-index: -1;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.6; }
-    }
-    
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-        100% { transform: translateY(0px); }
-    }
-    
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes slideInLeft {
-        from { opacity: 0; transform: translateX(-50px); }
-        to { opacity: 1; transform: translateX(0); }
-    }
-    
-    @keyframes bounceIn {
-        0% { opacity: 0; transform: scale(0.3); }
-        50% { opacity: 1; transform: scale(1.1); }
-        100% { opacity: 1; transform: scale(1); }
-    }
-    
-    .floating-card {
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    .fade-in-up {
-        animation: fadeInUp 0.8s ease-out;
-    }
-    
-    .slide-in-left {
-        animation: slideInLeft 0.6s ease-out;
-    }
-    
-    .bounce-in {
-        animation: bounceIn 0.8s ease-out;
-    }
-    
-    /* Enhanced loading spinner */
-    .loading-spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid rgba(255,255,255,0.3);
-        border-left: 4px solid #667eea;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 20px auto;
-    }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    /* Professional header with glass effect */
-    .custom-header {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 1.5rem 2rem;
-        margin: -1rem -1rem 2rem -1rem;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        position: relative;
-    }
-    
-    .header-content {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    
-    .logo-section {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-    
-    .logo-icon {
-        font-size: 2.8rem;
-        background: linear-gradient(45deg, #ffd700, #ffed4e, #fff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-        animation: logoGlow 3s ease-in-out infinite alternate;
-    }
-    
-    @keyframes logoGlow {
-        0% { filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
-        100% { filter: drop-shadow(2px 2px 8px rgba(255,215,0,0.4)); }
-    }
-    
-    .logo-text {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: white;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        margin: 0;
-        letter-spacing: -0.5px;
-    }
-    
-    .tagline {
-        font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.9);
-        font-style: italic;
-        margin: 0;
-        font-weight: 300;
-        letter-spacing: 0.5px;
-    }
-    
-    /* Enhanced sidebar styling */
-    .css-1d391kg {
-        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    .css-1v0mbdj {
+    /* Ensure all text is visible */
+    .main * {
         color: white !important;
     }
     
-    /* Tab styling */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 24px;
-        background-color: transparent;
+    /* Button styling */
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+        border: none;
+        padding: 0.75rem 1.5rem;
         border-radius: 15px;
-        padding: 15px;
-        margin: 1rem 0;
-        backdrop-filter: none;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 12px 24px;
-        color: white !important;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
         font-weight: 600;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        border: 2px solid rgba(255,255,255,0.2);
     }
     
-    .stTabs [aria-selected="true"] {
-        background: rgba(255, 255, 255, 0.25) !important;
-        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+    .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        color: white !important;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
     }
     
-    /* Enhanced container styling with glassmorphism */
-    .auth-container {
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(25px);
-        padding: 2.5rem;
-        border-radius: 30px;
-        box-shadow: 
-            0 30px 60px rgba(0, 0, 0, 0.15),
-            inset 0 1px 0 rgba(255, 255, 255, 0.25);
-        margin: 2rem auto;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        position: relative;
-        overflow: hidden;
-        max-width: 900px;
-    }
-    
-    .auth-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(255,215,0,0.8), transparent);
-    }
-    
-    .auth-container::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        animation: float 8s ease-in-out infinite;
-        pointer-events: none;
-    }
-    
-    /* Professional card styling */
-    .feature-card {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(15px);
-        padding: 2.5rem;
-        border-radius: 20px;
-        text-align: center;
-        height: 300px;
-        box-shadow: 
-            0 15px 35px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .feature-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
-    }
-    
-    .feature-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 
-            0 25px 45px rgba(0, 0, 0, 0.15),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-    
-    /* Improved text visibility */
-    .auth-container h1,
-    .auth-container h2,
-    .auth-container h3 {
-        color: white !important;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-    
-    .auth-container p {
-        color: rgba(255, 255, 255, 0.9) !important;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* Enhanced form styling */
+    /* Input styling */
     .stTextInput > div > div > input {
-        background: rgba(255, 255, 255, 0.98) !important;
-        border: 2px solid rgba(102, 126, 234, 0.2) !important;
-        border-radius: 15px !important;
-        padding: 1rem !important;
-        transition: all 0.3s ease !important;
-        color: #333 !important;
-        font-size: 1rem !important;
-        font-weight: 500 !important;
-    }
-    
-    .stTextInput > div > div > input:focus {
-        border-color: #667eea !important;
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15) !important;
-        background: white !important;
-        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.95) !important;
+        color: black !important;
+        border: 2px solid rgba(102, 126, 234, 0.3) !important;
+        border-radius: 10px !important;
+        padding: 0.75rem !important;
     }
     
     .stTextInput label {
         color: white !important;
-        font-weight: 700 !important;
-        font-size: 1.1rem !important;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important;
-        margin-bottom: 0.5rem !important;
+        font-weight: 600 !important;
     }
     
-    /* Enhanced button styling */
-    .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6B73FF 100%);
-        color: white;
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 25px;
-        font-weight: 700;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        width: 100%;
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        position: relative;
-        overflow: hidden;
+    /* Card styling */
+    .card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid rgba(255,255,255,0.2);
+        margin: 1rem 0;
     }
     
-    .stButton > button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-        transition: left 0.5s;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
-        background: linear-gradient(135deg, #5a6fd8 0%, #6a42a0 50%, #5d68ff 100%);
-    }
-    
-    .stButton > button:hover::before {
-        left: 100%;
-    }
-    
-    /* Enhanced tab styling */
+    /* Tab styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 1rem;
         background: rgba(255, 255, 255, 0.1);
         padding: 0.5rem;
         border-radius: 20px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
         margin-bottom: 2rem;
     }
     
@@ -433,9 +139,7 @@ st.markdown(
         border-radius: 15px;
         color: rgba(255, 255, 255, 0.8);
         font-weight: 600;
-        font-size: 1.1rem;
         padding: 0.75rem 1.5rem;
-        transition: all 0.3s ease;
         border: none;
     }
     
@@ -443,128 +147,10 @@ st.markdown(
         background: linear-gradient(135deg, #667eea, #764ba2) !important;
         color: white !important;
         box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        transform: translateY(-2px);
-    }
-    
-    .stTabs [data-baseweb="tab"]:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
-    }
-    
-    /* Enhanced expander styling */
-    .streamlit-expanderHeader {
-        background: rgba(255, 255, 255, 0.1) !important;
-        border-radius: 12px !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        color: white !important;
-        font-weight: 600 !important;
-    }
-    
-    .streamlit-expanderContent {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border-radius: 0 0 12px 12px !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-top: none !important;
-        padding: 1rem !important;
-    }
-    
-    .streamlit-expanderContent p {
-        color: rgba(255, 255, 255, 0.9) !important;
-        font-size: 0.95rem !important;
-        line-height: 1.6 !important;
-    }
-    
-    /* Enhanced validation feedback styling */
-    .validation-text {
-        font-size: 0.9rem;
-        margin-top: 0.5rem;
-        font-weight: 600;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-        padding: 0.25rem 0.5rem;
-        border-radius: 8px;
-        display: inline-block;
-    }
-    
-    .valid {
-        color: #4CAF50 !important;
-        background: rgba(76, 175, 80, 0.1);
-        border: 1px solid rgba(76, 175, 80, 0.3);
-    }
-    
-    .invalid {
-        color: #ff6b6b !important;
-        background: rgba(255, 107, 107, 0.1);
-        border: 1px solid rgba(255, 107, 107, 0.3);
-    }
-    
-    /* Alert styling */
-    .stAlert {
-        border-radius: 15px !important;
-        backdrop-filter: blur(5px) !important;
-        font-weight: 600 !important;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    .stSuccess {
-        background: rgba(76, 175, 80, 0.9) !important;
-        color: white !important;
-    }
-    
-    .stError {
-        background: rgba(244, 67, 54, 0.9) !important;
-        color: white !important;
-    }
-    
-    .stWarning {
-        background: rgba(255, 152, 0, 0.9) !important;
-        color: white !important;
-    }
-    
-    /* Sidebar improvements */
-    .css-1aumxhk {
-        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-    
-    /* Radio button styling */
-    .stRadio > label {
-        color: white !important;
-        font-weight: 500;
-    }
-    
-    /* Expander styling */
-    .streamlit-expanderHeader {
-        background: rgba(255, 255, 255, 0.15) !important;
-        border-radius: 10px !important;
-        color: white !important;
-        font-weight: 600 !important;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    .streamlit-expanderContent {
-        background: rgba(255, 255, 255, 0.1) !important;
-        color: white !important;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
     }
     </style>
-    """,
-    unsafe_allow_html=True
+    """, unsafe_allow_html=True
 )
-
-# Custom header section
-st.markdown("""
-<div class="custom-header">
-    <div class="header-content">
-        <div class="logo-section">
-            <div class="logo-icon">🚀</div>
-            <div>
-                <h1 class="logo-text">AspirePath</h1>
-                <p class="tagline">Your Journey to Success Starts Here</p>
-            </div>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
 
 # --- Enhanced Sidebar Navigation with Option Menu ---
 with st.sidebar:
