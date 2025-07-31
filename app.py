@@ -312,6 +312,34 @@ st.markdown(
         background-color: transparent !important;
     }
     
+    /* FORCE DARK BACKGROUND FOR ALL TAB CONTENT */
+    .stTabs [data-baseweb="tab-panel"], 
+    .stTabs [data-baseweb="tab-panel"] *,
+    .stTabs [data-baseweb="tab-panel"] > div,
+    .stTabs [data-baseweb="tab-panel"] > div > div {
+        background-color: transparent !important;
+        color: white !important;
+    }
+    
+    /* OVERRIDE STREAMLIT'S WHITE BACKGROUNDS */
+    div[data-stale="false"], 
+    .element-container div,
+    .stForm,
+    .block-container > div,
+    .main .block-container > div > div,
+    .main .block-container > div > div > div {
+        background-color: transparent !important;
+        color: white !important;
+    }
+    
+    /* SPECIFIC FIX FOR WHITE CONTAINERS */
+    .stContainer, .stContainer > div,
+    .css-1kyxreq, .css-12ttj6m, .css-1d391kg,
+    .css-1aumxhk, .css-k1vhr4, .css-1v0mbdj {
+        background-color: transparent !important;
+        color: white !important;
+    }
+    
     .auth-container h1, .auth-container h2, .auth-container h3 {
         color: #FFD700 !important;
     }
@@ -351,6 +379,34 @@ st.markdown(
     
     /* Force white text in all auth sections */
     div[class*="auth"] * {
+        color: white !important;
+    }
+    
+    /* CSS for validation messages */
+    .validation-text {
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        margin-top: 0.25rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .validation-text.valid {
+        color: #4CAF50 !important;
+    }
+    
+    .validation-text.invalid {
+        color: #FF6B6B !important;
+    }
+    
+    /* ADDITIONAL FORCE OVERRIDES FOR STREAMLIT ELEMENTS */
+    .stTabs, .stTabs > div, .stTabs > div > div {
+        background-color: transparent !important;
+    }
+    
+    /* OVERRIDE ANY REMAINING WHITE AREAS */
+    .css-1544g2n, .css-18e3th9, .css-1d391kg, 
+    .css-12ttj6m, .css-1aumxhk, .css-k1vhr4 {
+        background-color: transparent !important;
         color: white !important;
     }
     </style>
@@ -533,7 +589,18 @@ if page_clean == "Log In / Sign Up":
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown('<div class="auth-container">', unsafe_allow_html=True)
+    st.markdown('''
+    <div class="auth-container" style="
+        background-color: #1a1a1a !important; 
+        border: 2px solid #333333 !important; 
+        border-radius: 20px !important; 
+        padding: 2rem !important; 
+        margin: 2rem auto !important; 
+        color: white !important; 
+        max-width: 800px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+    ">
+    ''', unsafe_allow_html=True)
 
     # Enhanced tabs with better styling
     tab1, tab2 = st.tabs(["🔑 Sign In", "🌟 Join AspirePath"])
