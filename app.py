@@ -409,6 +409,44 @@ st.markdown(
         background-color: transparent !important;
         color: white !important;
     }
+    
+    /* LATEST STREAMLIT CLASSES - FORCE TRANSPARENT */
+    .st-emotion-cache-16txtl3, .st-emotion-cache-1y4p8pa, 
+    .st-emotion-cache-12w0qpk, .st-emotion-cache-1r6slb0,
+    .st-emotion-cache-1wmy9hl, .st-emotion-cache-nahz7x,
+    .st-emotion-cache-ocqkz7, .st-emotion-cache-1y5z0bw {
+        background-color: transparent !important;
+        background: transparent !important;
+        color: white !important;
+    }
+    
+    /* STREAMLIT TAB OVERRIDES */
+    .st-emotion-cache-1kyxreq, .st-emotion-cache-1v0mbdj,
+    .st-emotion-cache-16txtl3 > div,
+    .st-emotion-cache-1y4p8pa > div,
+    [data-baseweb="tab-list"] {
+        background-color: #1a1a1a !important;
+        background: #1a1a1a !important;
+    }
+    
+    [data-baseweb="tab"] {
+        background-color: #333333 !important;
+        background: #333333 !important;
+        color: white !important;
+        border: 1px solid #666666 !important;
+    }
+    
+    [data-baseweb="tab"][aria-selected="true"] {
+        background-color: #ffd700 !important;
+        background: #ffd700 !important;
+        color: black !important;
+    }
+    
+    [data-baseweb="tab-panel"] {
+        background-color: transparent !important;
+        background: transparent !important;
+        color: white !important;
+    }
     </style>
     """, unsafe_allow_html=True
 )
@@ -589,16 +627,66 @@ if page_clean == "Log In / Sign Up":
     </div>
     """, unsafe_allow_html=True)
     
+    # Apply ultra-aggressive CSS just for this page
+    st.markdown("""
+    <style>
+    /* ULTRA AGGRESSIVE OVERRIDES FOR AUTH PAGE */
+    .element-container:has(.stTabs), 
+    .stTabs,
+    .stTabs > div,
+    .stTabs [data-baseweb="tab-list"],
+    .stTabs [data-baseweb="tab-panel"],
+    .stTabs [data-baseweb="tab-panel"] > div,
+    .block-container > div:has(.stTabs),
+    div:has(.stTabs) {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+    
+    /* TARGET ALL POSSIBLE STREAMLIT CONTAINERS */
+    [data-testid="column"] > div,
+    [data-testid="column"] > div > div,
+    [data-testid="column"] > div > div > div,
+    .element-container > div,
+    .element-container > div > div,
+    .stForm,
+    .stForm > div,
+    .row-widget,
+    .row-widget > div {
+        background-color: transparent !important;
+        background: transparent !important;
+        color: white !important;
+    }
+    
+    /* FORCE TRANSPARENT ON ALL STREAMLIT WIDGETS */
+    .stTextInput,
+    .stTextInput > div,
+    .stTextInput > div > div,
+    .stButton,
+    .stButton > div,
+    .stRadio,
+    .stRadio > div,
+    .stExpander,
+    .stExpander > div {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
     st.markdown('''
-    <div class="auth-container" style="
-        background-color: #1a1a1a !important; 
-        border: 2px solid #333333 !important; 
-        border-radius: 20px !important; 
-        padding: 2rem !important; 
+    <div style="
+        background-color: #0a0a0a !important; 
+        background: #0a0a0a !important;
+        border: 3px solid #ffd700 !important; 
+        border-radius: 25px !important; 
+        padding: 3rem !important; 
         margin: 2rem auto !important; 
         color: white !important; 
-        max-width: 800px !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        max-width: 900px !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8) !important;
+        position: relative !important;
+        z-index: 1000 !important;
     ">
     ''', unsafe_allow_html=True)
 
@@ -746,6 +834,28 @@ if page_clean == "Log In / Sign Up":
                                 st.error(f"❌ {message}")
                         except Exception as e:
                             st.error(f"❌ An error occurred while creating your account. Please try again.")
+    
+    # Force styling with JavaScript
+    st.markdown("""
+    <script>
+    // Force dark styling on all elements
+    setTimeout(function() {
+        const elements = document.querySelectorAll('*');
+        elements.forEach(el => {
+            if (el.style) {
+                if (el.style.backgroundColor === 'white' || el.style.backgroundColor === '#ffffff' || 
+                    el.style.backgroundColor === 'rgb(255, 255, 255)') {
+                    el.style.backgroundColor = 'transparent';
+                }
+                if (el.style.color === 'black' || el.style.color === '#000000' || 
+                    el.style.color === 'rgb(0, 0, 0)') {
+                    el.style.color = 'white';
+                }
+            }
+        });
+    }, 100);
+    </script>
+    """, unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
