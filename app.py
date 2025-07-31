@@ -674,35 +674,65 @@ if page_clean == "Log In / Sign Up":
     </style>
     """, unsafe_allow_html=True)
     
-    st.markdown('''
+    # Create a custom HTML container that overrides Streamlit completely
+    st.markdown("""
     <div style="
-        background-color: #0a0a0a !important; 
-        background: #0a0a0a !important;
-        border: 3px solid #ffd700 !important; 
-        border-radius: 25px !important; 
-        padding: 3rem !important; 
-        margin: 2rem auto !important; 
-        color: white !important; 
+        background: linear-gradient(135deg, #000000, #1a1a1a) !important;
+        border: 3px solid #ffd700 !important;
+        border-radius: 25px !important;
+        padding: 3rem !important;
+        margin: 2rem auto !important;
+        color: white !important;
         max-width: 900px !important;
         box-shadow: 0 20px 50px rgba(0,0,0,0.8) !important;
         position: relative !important;
         z-index: 1000 !important;
     ">
-    ''', unsafe_allow_html=True)
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 style="color: #ffd700; font-size: 2rem; margin-bottom: 1rem;">Choose Your Action</h2>
+            <p style="color: white; font-size: 1.1rem;">Sign in to your account or create a new one</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # Enhanced tabs with better styling
-    tab1, tab2 = st.tabs(["🔑 Sign In", "🌟 Join AspirePath"])
-
-    with tab1:
+    # Create manual tabs using buttons instead of st.tabs
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        login_tab = st.button("🔑 Sign In", use_container_width=True, key="login_tab_btn")
+    
+    with col2:
+        signup_tab = st.button("🌟 Join AspirePath", use_container_width=True, key="signup_tab_btn")
+    
+    # Initialize tab state
+    if 'active_tab' not in st.session_state:
+        st.session_state.active_tab = 'login'
+    
+    if login_tab:
+        st.session_state.active_tab = 'login'
+    elif signup_tab:
+        st.session_state.active_tab = 'signup'
+    
+    # Show content based on active tab
+    if st.session_state.active_tab == 'login':
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a) !important;
+            border: 2px solid #444444 !important;
+            border-radius: 15px !important;
+            padding: 2rem !important;
+            margin: 1rem 0 !important;
+            color: white !important;
+        ">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h3 style="color: #ffd700; font-size: 1.8rem; margin-bottom: 0.5rem;">Welcome Back! 👋</h3>
+                <p style="color: white; font-size: 1rem;">Sign in to continue your career journey</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
         col1, col2, col3 = st.columns([1, 3, 1])
         with col2:
-            st.markdown("""
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h3 style="color: white; font-size: 1.8rem; margin-bottom: 0.5rem;">Welcome Back! 👋</h3>
-                <p style="color: rgba(255,255,255,0.8); font-size: 1rem;">Sign in to continue your career journey</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
             login_email = st.text_input("📧 Email Address", key="login_email", placeholder="your.email@example.com")
             login_password = st.text_input("🔒 Password", type="password", key="login_password", placeholder="Enter your password")
 
@@ -726,48 +756,57 @@ if page_clean == "Log In / Sign Up":
                 else:
                     st.warning("⚠️ Please enter both email and password.")
 
-    with tab2:
+    else:  # signup tab
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a) !important;
+            border: 2px solid #444444 !important;
+            border-radius: 15px !important;
+            padding: 2rem !important;
+            margin: 1rem 0 !important;
+            color: white !important;
+        ">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h3 style="color: #ffd700; font-size: 1.8rem; margin-bottom: 0.5rem;">Start Your Journey! 🌟</h3>
+                <p style="color: white; font-size: 1rem;">Create your account and unlock your career potential</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
         col1, col2, col3 = st.columns([1, 3, 1])
         with col2:
-            st.markdown("""
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h3 style="color: white; font-size: 1.8rem; margin-bottom: 0.5rem;">Start Your Journey! 🌟</h3>
-                <p style="color: rgba(255,255,255,0.8); font-size: 1rem;">Create your account and unlock your career potential</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
             # Name input with validation
             signup_name = st.text_input("👤 Full Name", key="signup_name", placeholder="Enter your full name")
             if signup_name:
                 if validate_name(signup_name):
-                    st.markdown('<p class="validation-text valid">✅ Valid name</p>', unsafe_allow_html=True)
+                    st.markdown('<p style="color: #4CAF50; font-size: 0.85rem;">✅ Valid name</p>', unsafe_allow_html=True)
                 else:
-                    st.markdown('<p class="validation-text invalid">❌ Name must be at least 2 characters and contain only letters</p>', unsafe_allow_html=True)
+                    st.markdown('<p style="color: #FF6B6B; font-size: 0.85rem;">❌ Name must be at least 2 characters and contain only letters</p>', unsafe_allow_html=True)
             
             # Email input with validation
             signup_email = st.text_input("📧 Email Address", key="signup_email", placeholder="your.email@example.com")
             if signup_email:
                 if validate_email(signup_email):
-                    st.markdown('<p class="validation-text valid">✅ Valid email format</p>', unsafe_allow_html=True)
+                    st.markdown('<p style="color: #4CAF50; font-size: 0.85rem;">✅ Valid email format</p>', unsafe_allow_html=True)
                 else:
-                    st.markdown('<p class="validation-text invalid">❌ Please enter a valid email address</p>', unsafe_allow_html=True)
+                    st.markdown('<p style="color: #FF6B6B; font-size: 0.85rem;">❌ Please enter a valid email address</p>', unsafe_allow_html=True)
             
             # Password input with validation
             signup_password = st.text_input("🔒 Password", type="password", key="signup_password", placeholder="Create a strong password")
             if signup_password:
                 is_valid, message = validate_password(signup_password)
                 if is_valid:
-                    st.markdown('<p class="validation-text valid">✅ Strong password</p>', unsafe_allow_html=True)
+                    st.markdown('<p style="color: #4CAF50; font-size: 0.85rem;">✅ Strong password</p>', unsafe_allow_html=True)
                 else:
-                    st.markdown(f'<p class="validation-text invalid">❌ {message}</p>', unsafe_allow_html=True)
+                    st.markdown(f'<p style="color: #FF6B6B; font-size: 0.85rem;">❌ {message}</p>', unsafe_allow_html=True)
             
             # Confirm password
             confirm_password = st.text_input("🔒 Confirm Password", type="password", key="confirm_password", placeholder="Confirm your password")
             if confirm_password and signup_password:
                 if signup_password == confirm_password:
-                    st.markdown('<p class="validation-text valid">✅ Passwords match</p>', unsafe_allow_html=True)
+                    st.markdown('<p style="color: #4CAF50; font-size: 0.85rem;">✅ Passwords match</p>', unsafe_allow_html=True)
                 else:
-                    st.markdown('<p class="validation-text invalid">❌ Passwords do not match</p>', unsafe_allow_html=True)
+                    st.markdown('<p style="color: #FF6B6B; font-size: 0.85rem;">❌ Passwords do not match</p>', unsafe_allow_html=True)
             
             st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
             
@@ -855,9 +894,8 @@ if page_clean == "Log In / Sign Up":
         });
     }, 100);
     </script>
+    </div>
     """, unsafe_allow_html=True)
-    
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # Home Section - Clean and properly formatted
 if page_clean == "Home":
