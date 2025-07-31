@@ -2,6 +2,10 @@
 
 AspirePath is an AI-powered career guidance platform designed to help users identify their skills, discover diverse career paths, and track their progress toward professional success. With sophisticated skill matching algorithms, personalized roadmaps, and an engaging user interface, AspirePath transforms the way you approach career development and goal achievement.
 
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://aspirepath.streamlit.app/)
+
+
+
 ## ✨ Key Features
 
 - **🔐 Connect to AspirePath**: Secure user authentication with enhanced glassmorphism UI design and Session State data persistence.
