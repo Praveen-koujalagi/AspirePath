@@ -698,6 +698,16 @@ if page_clean == "Log In / Sign Up":
     
     # Show content based on active tab
     if st.session_state.active_tab == 'login':
+        # Create visible container like the Pro Tip section
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); 
+                    border-radius: 15px; 
+                    padding: 2rem; 
+                    margin: 1rem 0; 
+                    border: 1px solid rgba(255,255,255,0.2); 
+                    backdrop-filter: blur(10px);">
+        """, unsafe_allow_html=True)
+        
         # Simple header without problematic HTML containers
         st.markdown("### 🔑 Welcome Back!")
         st.markdown("Sign in to continue your career journey")
@@ -729,8 +739,21 @@ if page_clean == "Log In / Sign Up":
                             st.error("❌ Invalid email or password.")
                 else:
                     st.warning("⚠️ Please enter both email and password.")
+        
+        # Close the container div
+        st.markdown("</div>", unsafe_allow_html=True)
 
     else:  # signup tab
+        # Create visible container like the Pro Tip section
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); 
+                    border-radius: 15px; 
+                    padding: 2rem; 
+                    margin: 1rem 0; 
+                    border: 1px solid rgba(255,255,255,0.2); 
+                    backdrop-filter: blur(10px);">
+        """, unsafe_allow_html=True)
+        
         # Simple header without problematic HTML containers
         st.markdown("### 🌟 Start Your Journey!")
         st.markdown("Create your account and unlock your career potential")
@@ -835,6 +858,9 @@ if page_clean == "Log In / Sign Up":
                                 st.error(f"❌ {message}")
                         except Exception as e:
                             st.error(f"❌ An error occurred while creating your account. Please try again.")
+        
+        # Close the container div
+        st.markdown("</div>", unsafe_allow_html=True)
     
     # Force styling with JavaScript - Remove problematic closing div
     st.markdown("""
