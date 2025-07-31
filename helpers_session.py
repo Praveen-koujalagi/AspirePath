@@ -19,13 +19,13 @@ def init_session_state_db():
                 "name": "Demo User",
                 "email": "demo@aspirepath.com",
                 "password": demo_password,
-                "created_at": datetime.now()
+                "created_at": datetime.now().isoformat()
             },
             {
                 "name": "Test User",
                 "email": "test@aspirepath.com", 
                 "password": demo_password,
-                "created_at": datetime.now()
+                "created_at": datetime.now().isoformat()
             }
         ]
         st.session_state.users.extend(demo_users)
