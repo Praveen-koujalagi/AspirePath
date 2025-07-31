@@ -10,36 +10,47 @@ from datetime import datetime
 @st.cache_resource
 def init_session_state_db():
     """Initialize session state collections for data storage"""
-    if 'users' not in st.session_state:
+    try:
+        if 'users' not in st.session_state or st.session_state.users is None:
+            st.session_state.users = []
+            # Add demo users for testing
+            demo_password = hashlib.sha256("demo123".encode()).hexdigest()
+            demo_users = [
+                {
+                    "name": "Demo User",
+                    "email": "demo@aspirepath.com",
+                    "password": demo_password,
+                    "created_at": datetime.now().isoformat()
+                },
+                {
+                    "name": "Test User",
+                    "email": "test@aspirepath.com", 
+                    "password": demo_password,
+                    "created_at": datetime.now().isoformat()
+                }
+            ]
+            st.session_state.users.extend(demo_users)
+        if 'resumes' not in st.session_state:
+            st.session_state.resumes = []
+        if 'skills' not in st.session_state:
+            st.session_state.skills = []
+        if 'quiz_results' not in st.session_state:
+            st.session_state.quiz_results = []
+        if 'roadmaps' not in st.session_state:
+            st.session_state.roadmaps = []
+        if 'progress' not in st.session_state:
+            st.session_state.progress = []
+        return True
+    except Exception as e:
+        print(f"Error initializing session state: {e}")
+        # Force reinitialize with empty lists
         st.session_state.users = []
-        # Add demo users for testing
-        demo_password = hashlib.sha256("demo123".encode()).hexdigest()
-        demo_users = [
-            {
-                "name": "Demo User",
-                "email": "demo@aspirepath.com",
-                "password": demo_password,
-                "created_at": datetime.now().isoformat()
-            },
-            {
-                "name": "Test User",
-                "email": "test@aspirepath.com", 
-                "password": demo_password,
-                "created_at": datetime.now().isoformat()
-            }
-        ]
-        st.session_state.users.extend(demo_users)
-    if 'resumes' not in st.session_state:
         st.session_state.resumes = []
-    if 'skills' not in st.session_state:
         st.session_state.skills = []
-    if 'quiz_results' not in st.session_state:
         st.session_state.quiz_results = []
-    if 'roadmaps' not in st.session_state:
         st.session_state.roadmaps = []
-    if 'progress' not in st.session_state:
         st.session_state.progress = []
-    return True
+        return False
 
 # Initialize session state database
 init_session_state_db()
@@ -297,45 +308,88 @@ def get_user_progress_stats(user_email):
 # Session State User Management Functions
 def create_user(name, email, password):
     """Create a new user in session state"""
-    init_session_state_db()
-    
-    # Check if user already exists
-    if any(user["email"] == email for user in st.session_state.users):
-        return False, "User already exists"
-    
-    # Hash password
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    
-    # Create user record
-    user_data = {
-        "name": name,
-        "email": email,
-        "password": hashed_password,
-        "created_at": datetime.now().isoformat()
-    }
-    
-    st.session_state.users.append(user_data)
-    return True, "User created successfully"
+    try:
+        init_session_state_db()
+        
+        # Ensure users list exists and is not None
+        if 'users' not in st.session_state or st.session_state.users is None:
+            st.session_state.users = []
+            init_session_state_db()
+        
+        # Check if user already exists
+        for user in st.session_state.users:
+            if isinstance(user, dict) and "email" in user:
+                if user["email"] == email:
+                    return False, "User already exists"
+        
+        # Hash password
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        
+        # Create user record
+        user_data = {
+            "name": name,
+            "email": email,
+            "password": hashed_password,
+            "created_at": datetime.now().isoformat()
+        }
+        
+        st.session_state.users.append(user_data)
+        return True, "User created successfully"
+    except Exception as e:
+        # Log error and reinitialize session state
+        print(f"Error in create_user: {e}")
+        st.session_state.users = []
+        init_session_state_db()
+        return False, "Error creating user"
 
 def authenticate_user(email, password):
     """Authenticate user login from session state"""
-    init_session_state_db()
-    
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    
-    for user in st.session_state.users:
-        if user["email"] == email and user["password"] == hashed_password:
-            return user
-    return None
+    try:
+        init_session_state_db()
+        
+        # Ensure users list exists and is not None
+        if 'users' not in st.session_state or st.session_state.users is None:
+            st.session_state.users = []
+            init_session_state_db()
+            return None
+        
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        
+        for user in st.session_state.users:
+            # Check if user is a dictionary and has required keys
+            if isinstance(user, dict) and "email" in user and "password" in user:
+                if user["email"] == email and user["password"] == hashed_password:
+                    return user
+        return None
+    except Exception as e:
+        # Log error and reinitialize session state
+        print(f"Error in authenticate_user: {e}")
+        st.session_state.users = []
+        init_session_state_db()
+        return None
 
 def find_user_by_email(email):
     """Find user by email in session state"""
-    init_session_state_db()
-    
-    for user in st.session_state.users:
-        if user["email"] == email:
-            return user
-    return None
+    try:
+        init_session_state_db()
+        
+        # Ensure users list exists and is not None
+        if 'users' not in st.session_state or st.session_state.users is None:
+            st.session_state.users = []
+            return None
+            
+        for user in st.session_state.users:
+            # Check if user is a dictionary and has email key
+            if isinstance(user, dict) and "email" in user:
+                if user["email"] == email:
+                    return user
+        return None
+    except Exception as e:
+        # Log error and reinitialize session state
+        print(f"Error in find_user_by_email: {e}")
+        st.session_state.users = []
+        init_session_state_db()
+        return None
 
 # Session State Database Statistics (for debugging)
 def get_session_stats():
