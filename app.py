@@ -674,28 +674,9 @@ if page_clean == "Log In / Sign Up":
     </style>
     """, unsafe_allow_html=True)
     
-    # Create a custom HTML container that overrides Streamlit completely
-    st.markdown("""
-    <div style="
-        background: linear-gradient(135deg, #000000, #1a1a1a) !important;
-        border: 3px solid #ffd700 !important;
-        border-radius: 25px !important;
-        padding: 3rem !important;
-        margin: 2rem auto !important;
-        color: white !important;
-        max-width: 900px !important;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.8) !important;
-        position: relative !important;
-        z-index: 1000 !important;
-    ">
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 style="color: #ffd700; font-size: 2rem; margin-bottom: 1rem;">Choose Your Action</h2>
-            <p style="color: white; font-size: 1.1rem;">Sign in to your account or create a new one</p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
     # Create manual tabs using buttons instead of st.tabs
+    st.markdown("---")
+    
     col1, col2 = st.columns(2)
     
     with col1:
@@ -703,6 +684,8 @@ if page_clean == "Log In / Sign Up":
     
     with col2:
         signup_tab = st.button("🌟 Join AspirePath", use_container_width=True, key="signup_tab_btn")
+    
+    st.markdown("---")
     
     # Initialize tab state
     if 'active_tab' not in st.session_state:
@@ -715,21 +698,12 @@ if page_clean == "Log In / Sign Up":
     
     # Show content based on active tab
     if st.session_state.active_tab == 'login':
-        st.markdown("""
-        <div style="
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a) !important;
-            border: 2px solid #444444 !important;
-            border-radius: 15px !important;
-            padding: 2rem !important;
-            margin: 1rem 0 !important;
-            color: white !important;
-        ">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h3 style="color: #ffd700; font-size: 1.8rem; margin-bottom: 0.5rem;">Welcome Back! 👋</h3>
-                <p style="color: white; font-size: 1rem;">Sign in to continue your career journey</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Simple header without problematic HTML containers
+        st.markdown("### 🔑 Welcome Back!")
+        st.markdown("Sign in to continue your career journey")
+        
+        # Demo credentials info
+        st.info("🧪 **Demo Credentials:** Email: `demo@aspirepath.com` | Password: `demo123`")
         
         col1, col2, col3 = st.columns([1, 3, 1])
         with col2:
@@ -757,21 +731,9 @@ if page_clean == "Log In / Sign Up":
                     st.warning("⚠️ Please enter both email and password.")
 
     else:  # signup tab
-        st.markdown("""
-        <div style="
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a) !important;
-            border: 2px solid #444444 !important;
-            border-radius: 15px !important;
-            padding: 2rem !important;
-            margin: 1rem 0 !important;
-            color: white !important;
-        ">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h3 style="color: #ffd700; font-size: 1.8rem; margin-bottom: 0.5rem;">Start Your Journey! 🌟</h3>
-                <p style="color: white; font-size: 1rem;">Create your account and unlock your career potential</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Simple header without problematic HTML containers
+        st.markdown("### 🌟 Start Your Journey!")
+        st.markdown("Create your account and unlock your career potential")
         
         col1, col2, col3 = st.columns([1, 3, 1])
         with col2:
@@ -874,7 +836,7 @@ if page_clean == "Log In / Sign Up":
                         except Exception as e:
                             st.error(f"❌ An error occurred while creating your account. Please try again.")
     
-    # Force styling with JavaScript
+    # Force styling with JavaScript - Remove problematic closing div
     st.markdown("""
     <script>
     // Force dark styling on all elements
@@ -894,7 +856,6 @@ if page_clean == "Log In / Sign Up":
         });
     }, 100);
     </script>
-    </div>
     """, unsafe_allow_html=True)
 
 # Home Section - Clean and properly formatted
