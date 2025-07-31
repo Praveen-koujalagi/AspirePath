@@ -1,12 +1,18 @@
 from config import SKILL_TEMPLATES
-from pymongo import MongoClient
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Initialize MongoDB client and collection
-client = MongoClient("mongodb://localhost:27017/")
-db = client["skills_database"]
-skills_collection = db["skills"]
+# Initialize MongoDB client and collection (optional for deployment)
+try:
+    from pymongo import MongoClient
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["skills_database"]
+    skills_collection = db["skills"]
+    MONGODB_AVAILABLE = True
+except Exception as e:
+    print(f"MongoDB not available: {e}")
+    MONGODB_AVAILABLE = False
+    skills_collection = None
 
 # Predefined career goals and their associated skills (comprehensive and inclusive)
 CAREER_SKILLS = {
@@ -23,8 +29,12 @@ def assess_skills(text):
     found = []
     for skills in SKILL_TEMPLATES.values():
         found += [skill for skill in skills if skill.lower() in text.lower()]
-    # Store the extracted skills in the database
-    skills_collection.insert_one({"text": text, "skills": found})
+    # Store the extracted skills in the database (if available)
+    if MONGODB_AVAILABLE and skills_collection:
+        try:
+            skills_collection.insert_one({"text": text, "skills": found})
+        except Exception as e:
+            print(f"Failed to store skills in database: {e}")
     return list(set(found))
 
 def select_goal():
