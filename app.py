@@ -501,11 +501,11 @@ with st.sidebar:
             styles={
                 "container": {
                     "padding": "0!important", 
-                    "background-color": "transparent",
+                    "background-color": "#000000",
                     "border-radius": "15px"
                 },
                 "icon": {
-                    "color": "rgba(255,255,255,0.8)", 
+                    "color": "#FFD700", 
                     "font-size": "18px"
                 },
                 "nav-link": {
@@ -513,19 +513,20 @@ with st.sidebar:
                     "text-align": "left",
                     "margin": "2px",
                     "padding": "12px 16px",
-                    "background-color": "rgba(255,255,255,0.1)",
-                    "color": "rgba(255,255,255,0.9)",
+                    "background-color": "#1a1a1a",
+                    "color": "white",
                     "border-radius": "10px",
-                    "border": "1px solid rgba(255,255,255,0.2)",
+                    "border": "2px solid #333333",
                     "backdrop-filter": "blur(10px)",
                     "transition": "all 0.3s ease"
                 },
                 "nav-link-selected": {
-                    "background-color": "rgba(255,255,255,0.25)",
-                    "color": "white",
-                    "border": "1px solid rgba(255,255,255,0.4)",
-                    "box-shadow": "0 4px 15px rgba(0,0,0,0.2)",
-                    "transform": "translateX(5px)"
+                    "background-color": "#FFD700",
+                    "color": "black",
+                    "border": "2px solid #FFD700",
+                    "box-shadow": "0 4px 15px rgba(255,215,0,0.3)",
+                    "transform": "translateX(5px)",
+                    "font-weight": "bold"
                 },
             }
         )
@@ -558,11 +559,11 @@ with st.sidebar:
             styles={
                 "container": {
                     "padding": "0!important", 
-                    "background-color": "transparent",
+                    "background-color": "#000000",
                     "border-radius": "15px"
                 },
                 "icon": {
-                    "color": "rgba(255,255,255,0.8)", 
+                    "color": "#FFD700", 
                     "font-size": "18px"
                 },
                 "nav-link": {
@@ -570,19 +571,20 @@ with st.sidebar:
                     "text-align": "left",
                     "margin": "2px",
                     "padding": "12px 16px",
-                    "background-color": "rgba(255,255,255,0.1)",
-                    "color": "rgba(255,255,255,0.9)",
+                    "background-color": "#1a1a1a",
+                    "color": "white",
                     "border-radius": "10px",
-                    "border": "1px solid rgba(255,255,255,0.2)",
+                    "border": "2px solid #333333",
                     "backdrop-filter": "blur(10px)",
                     "transition": "all 0.3s ease"
                 },
                 "nav-link-selected": {
-                    "background-color": "rgba(255,255,255,0.25)",
-                    "color": "white",
-                    "border": "1px solid rgba(255,255,255,0.4)",
-                    "box-shadow": "0 4px 15px rgba(0,0,0,0.2)",
-                    "transform": "translateX(5px)"
+                    "background-color": "#FFD700",
+                    "color": "black",
+                    "border": "2px solid #FFD700",
+                    "box-shadow": "0 4px 15px rgba(255,215,0,0.3)",
+                    "transform": "translateX(5px)",
+                    "font-weight": "bold"
                 },
             }
         )
