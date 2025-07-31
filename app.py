@@ -295,6 +295,64 @@ st.markdown(
         margin: 1rem 0 !important;
         color: white !important;
     }
+    
+    /* AUTH CONTAINER - Fix the white box issue */
+    .auth-container {
+        background-color: #1a1a1a !important;
+        border: 2px solid #333333 !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin: 2rem auto !important;
+        color: white !important;
+        max-width: 800px !important;
+    }
+    
+    .auth-container * {
+        color: white !important;
+        background-color: transparent !important;
+    }
+    
+    .auth-container h1, .auth-container h2, .auth-container h3 {
+        color: #FFD700 !important;
+    }
+    
+    /* TAB CONTENT - Ensure visibility */
+    .stTabs [data-baseweb="tab-panel"] {
+        background-color: transparent !important;
+        color: white !important;
+    }
+    
+    .stTabs [data-baseweb="tab-panel"] * {
+        color: white !important;
+    }
+    
+    /* COLUMNS inside auth container */
+    .auth-container .element-container {
+        background-color: transparent !important;
+    }
+    
+    /* Specific fixes for login/signup forms */
+    .auth-container .stTextInput label {
+        color: #FFD700 !important;
+        font-weight: bold !important;
+    }
+    
+    .auth-container .stTextInput input {
+        background-color: #2a2a2a !important;
+        color: white !important;
+        border: 2px solid #444444 !important;
+    }
+    
+    .auth-container .stButton button {
+        background-color: #333333 !important;
+        color: white !important;
+        border: 2px solid #FFD700 !important;
+    }
+    
+    /* Force white text in all auth sections */
+    div[class*="auth"] * {
+        color: white !important;
+    }
     </style>
     """, unsafe_allow_html=True
 )

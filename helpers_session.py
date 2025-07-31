@@ -12,6 +12,23 @@ def init_session_state_db():
     """Initialize session state collections for data storage"""
     if 'users' not in st.session_state:
         st.session_state.users = []
+        # Add demo users for testing
+        demo_password = hashlib.sha256("demo123".encode()).hexdigest()
+        demo_users = [
+            {
+                "name": "Demo User",
+                "email": "demo@aspirepath.com",
+                "password": demo_password,
+                "created_at": datetime.now()
+            },
+            {
+                "name": "Test User",
+                "email": "test@aspirepath.com", 
+                "password": demo_password,
+                "created_at": datetime.now()
+            }
+        ]
+        st.session_state.users.extend(demo_users)
     if 'resumes' not in st.session_state:
         st.session_state.resumes = []
     if 'skills' not in st.session_state:
