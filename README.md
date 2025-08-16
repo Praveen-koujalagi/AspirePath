@@ -50,22 +50,6 @@ AspirePath is an AI-powered career guidance platform designed to help users iden
    - Open your browser and go to `http://localhost:8501`
    - Click "Get Started" to begin your career journey!
 
-## ☁️ Streamlit Cloud Deployment
-
-AspirePath is now optimized for **instant deployment** on Streamlit Cloud:
-
-### 🚀 One-Click Deployment
-1. **Fork this repository** to your GitHub account
-2. **Visit** [share.streamlit.io](https://share.streamlit.io)
-3. **Connect your GitHub** and select the AspirePath repository
-4. **Deploy instantly** - no additional configuration needed!
-
-### ✨ Deployment Benefits
-- **Zero Setup**: No external database or services required
-- **Instant Access**: App ready in minutes with full functionality
-- **Session Persistence**: User data maintained throughout their session
-- **Cost-Free**: Perfect for demos, testing, and personal use
-
 ## 📁 Project Structure
 
 ```
