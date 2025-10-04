@@ -2,6 +2,16 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from streamlit_lottie import st_lottie
 from core import assess_skills, select_goal, generate_roadmap, predict_career, get_career_matches
+
+# Import ML enhancements with fallback
+try:
+    from enhanced_prediction import predict_career_enhanced
+    ML_ENHANCED = True
+except ImportError as e:
+    print(f"ML enhancement not available: {e}")
+    ML_ENHANCED = False
+    predict_career_enhanced = predict_career  # Fallback to original
+
 from helpers_session import (
     parse_resume, fetch_youtube_resources, store_quiz_results, 
     validate_email, validate_password, validate_name, store_progress_achievement,
@@ -10,6 +20,14 @@ from helpers_session import (
 )
 from project_suggester import suggest_projects
 from quiz_engine import load_questions, run_quiz, fetch_questions_from_api
+
+# Import smart quiz with fallback
+try:
+    from smart_quiz import integrate_smart_quiz_in_app, load_smart_questions
+    SMART_QUIZ_AVAILABLE = True
+except ImportError as e:
+    print(f"Smart quiz not available: {e}")
+    SMART_QUIZ_AVAILABLE = False
 import hashlib
 import requests
 import json
@@ -1174,16 +1192,43 @@ elif page_clean == "Skill Quiz & Resume Upload":
         st.info(f"📊 Ready to test your knowledge in: **{', '.join(user_skills[:5])}**" + 
                 ("..." if len(user_skills) > 5 else ""))
 
-        # Try to fetch questions
+        # Try to fetch questions with ML enhancement
         try:
-            with st.spinner("Preparing your personalized quiz..."):
-                questions = fetch_questions_from_api(user_skills)
+            with st.spinner("🤖 Preparing your AI-optimized quiz..." if SMART_QUIZ_AVAILABLE else "Preparing your personalized quiz..."):
+                if SMART_QUIZ_AVAILABLE:
+                    try:
+                        # Try smart quiz with ML-based question selection
+                        questions, quiz_config = integrate_smart_quiz_in_app(user_skills)
+                        
+                        if questions:
+                            # Show smart quiz info
+                            st.success(f"✨ **AI-Optimized Quiz Generated!** {len(questions)} questions tailored for your profile")
+                            
+                            # Show predicted career from quiz analysis
+                            if quiz_config.get('predicted_career'):
+                                st.info(f"🎯 **Quiz Focus:** Optimized for {quiz_config['predicted_career']} career path")
+                            
+                            # Show focus areas if any
+                            focus_areas = quiz_config.get('adaptive_rules', {}).get('focus_areas', [])
+                            if focus_areas:
+                                st.warning(f"📋 **Key Areas to Assess:** {', '.join(focus_areas[:3])}")
+                        else:
+                            raise Exception("Smart quiz returned no questions")
+                            
+                    except Exception as smart_quiz_error:
+                        # Fallback to API questions
+                        st.info("📝 Using standard quiz system...")
+                        questions = fetch_questions_from_api(user_skills)
+                else:
+                    # Standard quiz system
+                    questions = fetch_questions_from_api(user_skills)
 
             if not questions:
                 st.warning("⚠️ Unable to generate quiz questions for your skills. Please try with different skills.")
                 st.info("💡 **Tip:** Try using common technical skills like 'Python', 'JavaScript', 'SQL', etc.")
             else:
-                st.success(f"📝 Generated {len(questions)} questions based on your skills!")
+                if not hasattr(st.session_state, 'quiz_enhanced'):
+                    st.success(f"📝 Generated {len(questions)} questions based on your skills!")
                 
                 # Add a reset quiz button if there are existing answers
                 existing_answers = any(f"quiz_q_{q['id']}" in st.session_state for q in questions)
@@ -1377,41 +1422,85 @@ elif page_clean == "Career Roadmap":
                 st.warning("Please enter at least one valid skill.")
                 st.stop()
             
-            # Predict career goal
-            predicted_career = predict_career(user_skills)
-            
-            # Get all career matches for transparency
-            career_matches = get_career_matches(user_skills)
-            
-            # Display primary recommendation
-            st.success(f"🔮 **Top Recommended Career Path:** {predicted_career}")
-            
-            # Show alternative career matches
-            if career_matches:
-                st.subheader("🎯 Career Path Analysis")
+            # Enhanced ML-based career prediction
+            if ML_ENHANCED:
+                prediction_result = predict_career_enhanced(user_skills)
+                predicted_career = prediction_result['primary_career']
                 
-                # Filter out careers with very low scores
-                relevant_matches = {career: score for career, score in career_matches.items() if score > 5}
+                # Display enhanced results with confidence scoring
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.success(f"🔮 **Top Recommended Career Path:** {predicted_career}")
+                with col2:
+                    confidence = prediction_result['confidence']
+                    if confidence >= 70:
+                        confidence_color = "🟢"
+                    elif confidence >= 50:
+                        confidence_color = "🟡" 
+                    else:
+                        confidence_color = "🔴"
+                    st.metric("AI Confidence", f"{confidence}%", delta=f"{confidence_color}")
                 
-                if len(relevant_matches) > 1:
-                    st.info("📊 **Alternative Career Paths Based on Your Skills:**")
+                # Show prediction method and enhanced info
+                method_info = "🤖 ML-Enhanced Analysis" if prediction_result['method'] == 'ml_enhanced' else "📊 Rule-Based Analysis"
+                st.caption(f"**Prediction Method:** {method_info}")
+            else:
+                # Fallback to original prediction
+                predicted_career = predict_career(user_skills)
+                st.success(f"🔮 **Top Recommended Career Path:** {predicted_career}")
+                st.caption("**Prediction Method:** 📊 Rule-Based Analysis")
+                prediction_result = {'alternatives': [], 'all_predictions': []}
+            
+            # Enhanced alternatives display
+            if ML_ENHANCED and prediction_result.get('alternatives'):
+                st.subheader("🎯 Alternative Career Paths")
+                st.info("📊 **Additional Career Matches Based on Your Skills:**")
+                
+                # Display alternatives with progress bars
+                for i, alt in enumerate(prediction_result['alternatives'][:4]):  # Show top 4 alternatives
+                    alt_confidence = alt['confidence']
                     
-                    # Create columns for better layout
-                    for i, (career, score) in enumerate(list(relevant_matches.items())[:5]):  # Show top 5
-                        match_percentage = min(100, score)  # Cap at 100%
-                        
-                        # Color coding based on match percentage
-                        if match_percentage >= 50:
-                            color = "🟢"  # Green for high match
-                        elif match_percentage >= 25:
-                            color = "🟡"  # Yellow for medium match
+                    # Create visual progress display
+                    col1_alt, col2_alt, col3_alt = st.columns([2, 2, 1])
+                    with col1_alt:
+                        # Color coding based on confidence
+                        if alt_confidence >= 50:
+                            color = "🟢"
+                        elif alt_confidence >= 25:
+                            color = "🟡"
                         else:
-                            color = "🔵"  # Blue for lower match
-                        
-                        if career == predicted_career:
-                            st.markdown(f"**{color} {career}** - {match_percentage:.1f}% match ⭐ **(Recommended)**")
-                        else:
-                            st.markdown(f"{color} {career} - {match_percentage:.1f}% match")
+                            color = "🔵"
+                        st.write(f"**{color} {alt['career']}**")
+                    with col2_alt:
+                        st.progress(alt_confidence / 100)
+                    with col3_alt:
+                        st.write(f"{alt_confidence:.1f}%")
+                
+                # Show diversity metrics
+                diversity_score = len(set(pred['career'] for pred in prediction_result['all_predictions'][:5])) / 5
+                st.caption(f"🎭 **Career Diversity Score:** {diversity_score:.1%} (Higher = more diverse options discovered)")
+            elif not ML_ENHANCED:
+                # Show original career matches for fallback
+                career_matches = get_career_matches(user_skills)
+                if career_matches:
+                    st.subheader("🎯 Career Path Analysis")
+                    relevant_matches = {career: score for career, score in career_matches.items() if score > 5}
+                    
+                    if len(relevant_matches) > 1:
+                        st.info("📊 **Alternative Career Paths Based on Your Skills:**")
+                        for i, (career, score) in enumerate(list(relevant_matches.items())[:5]):
+                            match_percentage = min(100, score)
+                            if match_percentage >= 50:
+                                color = "🟢"
+                            elif match_percentage >= 25:
+                                color = "🟡"
+                            else:
+                                color = "🔵"
+                            
+                            if career == predicted_career:
+                                st.markdown(f"**{color} {career}** - {match_percentage:.1f}% match ⭐ **(Recommended)**")
+                            else:
+                                st.markdown(f"{color} {career} - {match_percentage:.1f}% match")
                 
                 st.markdown("---")
             
