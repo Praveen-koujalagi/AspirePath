@@ -889,7 +889,8 @@ elif page_clean == "Skill Quiz & Resume Upload":
 
         if uploaded_file:
             try:
-                with st.spinner("Analyzing your resume..."):
+                with st.spinner("🔍 Analyzing your resume..."):
+                    # Enhanced resume processing with better error handling
                     resume_text = parse_resume(uploaded_file)
                     user_skills = assess_skills(resume_text)
                     
@@ -898,6 +899,39 @@ elif page_clean == "Skill Quiz & Resume Upload":
                     
                     # Display extracted skills in an organized way
                     with st.expander("📋 View Extracted Skills"):
+                        st.write("**Skills found in your resume:**")
+                        skill_cols = st.columns(3)
+                        for i, skill in enumerate(user_skills):
+                            with skill_cols[i % 3]:
+                                st.write(f"• {skill}")
+                    
+                else:
+                    st.warning("⚠️ No recognizable skills found in your resume. Please try manual entry below.")
+                    
+            except ValueError as ve:
+                # Handle specific parsing errors with user-friendly messages
+                st.error(f"❌ {str(ve)}")
+                st.info("💡 **Alternative:** Try uploading a different file format or use manual skill entry below.")
+                
+            except Exception as e:
+                # Handle unexpected errors
+                error_msg = str(e)
+                if "Collection objects do not implement truth value" in error_msg:
+                    st.error("❌ Database connection issue detected. Please use manual skill entry below.")
+                    st.info("💡 **Tip:** This is a temporary technical issue. Manual entry works perfectly!")
+                else:
+                    st.error(f"❌ Error processing resume: {error_msg}")
+                    st.info("💡 **Alternative:** Please try again or use manual skill entry below.")
+                
+        else:
+            # Show helpful information when no file is uploaded
+            st.info("""
+            📤 **Upload Tips:**
+            - Supported formats: PDF, DOCX
+            - File size limit: 200MB
+            - Ensure your resume contains clear skill listings
+            - Alternative: Use manual entry below
+            """)
                         skills_display = ", ".join(user_skills)
                         st.markdown(f"**Detected Skills:** {skills_display}")
                 else:
@@ -1342,18 +1376,32 @@ elif page_clean == "Peer Comparison":
         person1_resume = st.file_uploader("Upload Resume (PDF or DOCX):", type=["pdf", "docx"], key="person1_resume")
         person1_skills = []
         if person1_resume:
-            person1_text = parse_resume(person1_resume)
-            person1_skills = assess_skills(person1_text)
-            st.success(f"Extracted Skills: {', '.join(person1_skills)}")
+            try:
+                with st.spinner("Analyzing Person 1's resume..."):
+                    person1_text = parse_resume(person1_resume)
+                    person1_skills = assess_skills(person1_text)
+                if person1_skills:
+                    st.success(f"✅ Person 1 - Extracted {len(person1_skills)} skills")
+                else:
+                    st.warning("⚠️ No skills found in Person 1's resume")
+            except Exception as e:
+                st.error(f"❌ Error processing Person 1's resume: {str(e)}")
 
     with col2:
         st.subheader("Person 2")
         person2_resume = st.file_uploader("Upload Resume (PDF or DOCX):", type=["pdf", "docx"], key="person2_resume")
         person2_skills = []
         if person2_resume:
-            person2_text = parse_resume(person2_resume)
-            person2_skills = assess_skills(person2_text)
-            st.success(f"Extracted Skills: {', '.join(person2_skills)}")
+            try:
+                with st.spinner("Analyzing Person 2's resume..."):
+                    person2_text = parse_resume(person2_resume)
+                    person2_skills = assess_skills(person2_text)
+                if person2_skills:
+                    st.success(f"✅ Person 2 - Extracted {len(person2_skills)} skills")
+                else:
+                    st.warning("⚠️ No skills found in Person 2's resume")
+            except Exception as e:
+                st.error(f"❌ Error processing Person 2's resume: {str(e)}")
 
     if person1_skills and person2_skills:
         st.subheader("🔍 Comparison Results")

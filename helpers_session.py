@@ -56,31 +56,69 @@ def init_session_state_db():
 init_session_state_db()
 
 def parse_resume(file):
-    """Parse resume and store in session state"""
-    text = ""
-    file_type = file.name.split(".")[-1]
+    """Parse resume and store in session state with enhanced error handling"""
+    try:
+        text = ""
+        file_type = file.name.split(".")[-1].lower()
 
-    if file_type == "pdf":
-        reader = PdfReader(file)
-        for page in reader.pages:
-            text += page.extract_text()
-    elif file_type == "docx":
-        doc = Document(file)
-        for para in doc.paragraphs:
-            text += para.text
-    elif file_type == "txt":
-        text = file.read().decode("utf-8")
-    else:
-        text = "Unsupported file format"
+        if file_type == "pdf":
+            reader = PdfReader(file)
+            for page in reader.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text
+        elif file_type == "docx":
+            doc = Document(file)
+            for para in doc.paragraphs:
+                if para.text.strip():
+                    text += para.text + "\n"
+        elif file_type == "txt":
+            text = file.read().decode("utf-8")
+        else:
+            raise ValueError(f"Unsupported file format: {file_type}")
 
-    # Store the parsed resume in session state
-    resume_data = {
-        "file_name": file.name, 
-        "content": text,
-        "uploaded_at": datetime.now().isoformat()
-    }
-    st.session_state.resumes.append(resume_data)
-    return text
+        if not text.strip():
+            raise ValueError("No text content could be extracted from the file")
+
+        # Ensure session state is properly initialized
+        init_session_state_db()
+        
+        # Ensure resumes list exists and is properly initialized
+        if 'resumes' not in st.session_state or st.session_state.resumes is None:
+            st.session_state.resumes = []
+
+        # Store the parsed resume in session state
+        resume_data = {
+            "file_name": file.name, 
+            "content": text.strip(),
+            "uploaded_at": datetime.now().isoformat(),
+            "file_size": len(text),
+            "file_type": file_type
+        }
+        
+        st.session_state.resumes.append(resume_data)
+        return text.strip()
+        
+    except Exception as e:
+        # Enhanced error handling with specific error messages
+        error_msg = f"Error processing resume: {str(e)}"
+        print(error_msg)  # For debugging
+        
+        # Initialize session state if needed
+        try:
+            init_session_state_db()
+            if 'resumes' not in st.session_state:
+                st.session_state.resumes = []
+        except:
+            pass
+            
+        # Return a user-friendly error message
+        if "Collection objects do not implement truth value" in str(e):
+            raise ValueError("Database connection error. Please try uploading a different file or use manual skill entry.")
+        elif "No text content" in str(e):
+            raise ValueError("Could not extract text from this file. Please ensure the file contains readable text.")
+        else:
+            raise ValueError(f"File processing error: {str(e)}")
 
 @st.cache_data
 def fetch_youtube_resources(goal, skills=[], max_results=5):

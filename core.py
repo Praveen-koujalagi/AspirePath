@@ -2,15 +2,18 @@ from config import SKILL_TEMPLATES
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Initialize MongoDB client and collection (optional for deployment)
+# MongoDB is optional - using session state for deployment
 try:
     from pymongo import MongoClient
-    client = MongoClient("mongodb://localhost:27017/")
+    client = MongoClient("mongodb://localhost:27017/", connectTimeoutMS=1000, serverSelectionTimeoutMS=1000)
+    # Test connection
+    client.server_info()
     db = client["skills_database"]
     skills_collection = db["skills"]
     MONGODB_AVAILABLE = True
+    print("MongoDB connection established")
 except Exception as e:
-    print(f"MongoDB not available: {e}")
+    print(f"MongoDB not available (using session state instead): {e}")
     MONGODB_AVAILABLE = False
     skills_collection = None
 
@@ -30,7 +33,7 @@ def assess_skills(text):
     for skills in SKILL_TEMPLATES.values():
         found += [skill for skill in skills if skill.lower() in text.lower()]
     # Store the extracted skills in the database (if available)
-    if MONGODB_AVAILABLE and skills_collection:
+    if MONGODB_AVAILABLE and skills_collection is not None:
         try:
             skills_collection.insert_one({"text": text, "skills": found})
         except Exception as e:
