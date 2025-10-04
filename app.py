@@ -18,6 +18,9 @@ from helpers_session import (
     create_user, authenticate_user, find_user_by_email, get_session_stats, 
     init_session_state_db, get_user_progress_stats
 )
+
+# Import new authentication system
+from auth_system import get_auth_system
 from project_suggester import suggest_projects
 from quiz_engine import load_questions, run_quiz, fetch_questions_from_api
 
@@ -555,9 +558,9 @@ with st.sidebar:
         
         # Handle logout
         if page == "Logout":
-            st.session_state.authenticated = False
-            st.session_state.user_name = ""
-            st.session_state.user_email = ""
+            auth_system = get_auth_system()
+            auth_system.logout_user()
+            st.success("👋 You have been logged out successfully!")
             st.rerun()
             
     else:
@@ -642,271 +645,9 @@ if page_clean == "Log In / Sign Up":
     if st.session_state.get('redirect_to_login', False):
         st.session_state.redirect_to_login = False
     
-    # Enhanced header section with better branding
-    st.markdown("""
-    <div style="text-align: center; padding: 2rem 0; margin-bottom: 2rem;">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
-        <h1 style="font-size: 2.8rem; background: linear-gradient(45deg, #ffd700, #ffed4e, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; margin-bottom: 0.5rem;">Connect to AspirePath</h1>
-        <p style="font-size: 1.2rem; color: rgba(255,255,255,0.9); margin-bottom: 0;">Your gateway to career transformation and success</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Apply ultra-aggressive CSS just for this page
-    st.markdown("""
-    <style>
-    /* ULTRA AGGRESSIVE OVERRIDES FOR AUTH PAGE */
-    .element-container:has(.stTabs), 
-    .stTabs,
-    .stTabs > div,
-    .stTabs [data-baseweb="tab-list"],
-    .stTabs [data-baseweb="tab-panel"],
-    .stTabs [data-baseweb="tab-panel"] > div,
-    .block-container > div:has(.stTabs),
-    div:has(.stTabs) {
-        background-color: transparent !important;
-        background: transparent !important;
-    }
-    
-    /* TARGET ALL POSSIBLE STREAMLIT CONTAINERS */
-    [data-testid="column"] > div,
-    [data-testid="column"] > div > div,
-    [data-testid="column"] > div > div > div,
-    .element-container > div,
-    .element-container > div > div,
-    .stForm,
-    .stForm > div,
-    .row-widget,
-    .row-widget > div {
-        background-color: transparent !important;
-        background: transparent !important;
-        color: white !important;
-    }
-    
-    /* FORCE TRANSPARENT ON ALL STREAMLIT WIDGETS */
-    .stTextInput,
-    .stTextInput > div,
-    .stTextInput > div > div,
-    .stButton,
-    .stButton > div,
-    .stRadio,
-    .stRadio > div,
-    .stExpander,
-    .stExpander > div {
-        background-color: transparent !important;
-        background: transparent !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    
-    # Create manual tabs using buttons instead of st.tabs
-    st.markdown("---")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        login_tab = st.button("🔑 Sign In", use_container_width=True, key="login_tab_btn")
-    
-    with col2:
-        signup_tab = st.button("🌟 Join AspirePath", use_container_width=True, key="signup_tab_btn")
-    
-    st.markdown("---")
-    
-    # Initialize tab state
-    if 'active_tab' not in st.session_state:
-        st.session_state.active_tab = 'login'
-    
-    if login_tab:
-        st.session_state.active_tab = 'login'
-    elif signup_tab:
-        st.session_state.active_tab = 'signup'
-    
-    # Show content based on active tab
-    if st.session_state.active_tab == 'login':
-        # Create visible container like the Pro Tip section
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); 
-                    border-radius: 15px; 
-                    padding: 2rem; 
-                    margin: 1rem 0; 
-                    border: 1px solid rgba(255,255,255,0.2); 
-                    backdrop-filter: blur(10px);">
-        """, unsafe_allow_html=True)
-        
-        # Simple header without problematic HTML containers
-        st.markdown("### 🔑 Welcome Back!")
-        st.markdown("Sign in to continue your career journey")
-        
-        # Demo credentials info
-        st.info("🧪 **Demo Credentials:** Email: `demo@aspirepath.com` | Password: `demo123`")
-        
-        col1, col2, col3 = st.columns([1, 3, 1])
-        with col2:
-            login_email = st.text_input("📧 Email Address", key="login_email", placeholder="your.email@example.com")
-            login_password = st.text_input("🔒 Password", type="password", key="login_password", placeholder="Enter your password")
-
-            st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("🚀 Sign In to AspirePath", key="login_btn", use_container_width=True):
-                if login_email and login_password:
-                    if not validate_email(login_email):
-                        st.error("❌ Please enter a valid email address.")
-                    else:
-                        user = authenticate_user(login_email, login_password)
-                        if user:
-                            # Set session state for authentication
-                            st.session_state.authenticated = True
-                            st.session_state.user_name = user['name']
-                            st.session_state.user_email = user['email']
-                            st.success(f"🎉 Welcome back, {user['name']}!")
-                            st.balloons()
-                            st.rerun()  # Refresh the app to show authenticated menu
-                        else:
-                            st.error("❌ Invalid email or password.")
-                else:
-                    st.warning("⚠️ Please enter both email and password.")
-        
-        # Close the container div
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    else:  # signup tab
-        # Create visible container like the Pro Tip section
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05)); 
-                    border-radius: 15px; 
-                    padding: 2rem; 
-                    margin: 1rem 0; 
-                    border: 1px solid rgba(255,255,255,0.2); 
-                    backdrop-filter: blur(10px);">
-        """, unsafe_allow_html=True)
-        
-        # Simple header without problematic HTML containers
-        st.markdown("### 🌟 Start Your Journey!")
-        st.markdown("Create your account and unlock your career potential")
-        
-        col1, col2, col3 = st.columns([1, 3, 1])
-        with col2:
-            # Name input with validation
-            signup_name = st.text_input("👤 Full Name", key="signup_name", placeholder="Enter your full name")
-            if signup_name:
-                if validate_name(signup_name):
-                    st.markdown('<p style="color: #4CAF50; font-size: 0.85rem;">✅ Valid name</p>', unsafe_allow_html=True)
-                else:
-                    st.markdown('<p style="color: #FF6B6B; font-size: 0.85rem;">❌ Name must be at least 2 characters and contain only letters</p>', unsafe_allow_html=True)
-            
-            # Email input with validation
-            signup_email = st.text_input("📧 Email Address", key="signup_email", placeholder="your.email@example.com")
-            if signup_email:
-                if validate_email(signup_email):
-                    st.markdown('<p style="color: #4CAF50; font-size: 0.85rem;">✅ Valid email format</p>', unsafe_allow_html=True)
-                else:
-                    st.markdown('<p style="color: #FF6B6B; font-size: 0.85rem;">❌ Please enter a valid email address</p>', unsafe_allow_html=True)
-            
-            # Password input with validation
-            signup_password = st.text_input("🔒 Password", type="password", key="signup_password", placeholder="Create a strong password")
-            if signup_password:
-                is_valid, message = validate_password(signup_password)
-                if is_valid:
-                    st.markdown('<p style="color: #4CAF50; font-size: 0.85rem;">✅ Strong password</p>', unsafe_allow_html=True)
-                else:
-                    st.markdown(f'<p style="color: #FF6B6B; font-size: 0.85rem;">❌ {message}</p>', unsafe_allow_html=True)
-            
-            # Confirm password
-            confirm_password = st.text_input("🔒 Confirm Password", type="password", key="confirm_password", placeholder="Confirm your password")
-            if confirm_password and signup_password:
-                if signup_password == confirm_password:
-                    st.markdown('<p style="color: #4CAF50; font-size: 0.85rem;">✅ Passwords match</p>', unsafe_allow_html=True)
-                else:
-                    st.markdown('<p style="color: #FF6B6B; font-size: 0.85rem;">❌ Passwords do not match</p>', unsafe_allow_html=True)
-            
-            st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
-            
-            # Password requirements info
-            with st.expander("🔍 Password Requirements"):
-                st.markdown("""
-                **Your password must contain:**
-                - ✅ At least 8 characters
-                - ✅ At least one uppercase letter (A-Z)
-                - ✅ At least one lowercase letter (a-z)
-                - ✅ At least one digit (0-9)
-                - ✅ At least one special character (!@#$%^&*(),.?":{}|<>)
-                """)
-
-            st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("🎯 Join AspirePath Now", key="signup_btn", use_container_width=True):
-                # Comprehensive validation
-                validation_errors = []
-                
-                if not signup_name:
-                    validation_errors.append("Name is required")
-                elif not validate_name(signup_name):
-                    validation_errors.append("Name must be at least 2 characters and contain only letters")
-                
-                if not signup_email:
-                    validation_errors.append("Email is required")
-                elif not validate_email(signup_email):
-                    validation_errors.append("Please enter a valid email address")
-                
-                if not signup_password:
-                    validation_errors.append("Password is required")
-                else:
-                    is_valid, password_error = validate_password(signup_password)
-                    if not is_valid:
-                        validation_errors.append(password_error)
-                
-                if not confirm_password:
-                    validation_errors.append("Please confirm your password")
-                elif signup_password != confirm_password:
-                    validation_errors.append("Passwords do not match")
-                
-                if validation_errors:
-                    for error in validation_errors:
-                        st.error(f"❌ {error}")
-                else:
-                    # Check if user already exists using session state
-                    if find_user_by_email(signup_email):
-                        st.error("❌ An account with this email already exists. Please use a different email or try logging in.")
-                    else:
-                        try:
-                            # Create user using session state
-                            success, message = create_user(signup_name.strip(), signup_email.lower().strip(), signup_password)
-                            
-                            if success:
-                                # Automatically authenticate the new user
-                                st.session_state.authenticated = True
-                                st.session_state.user_name = signup_name.strip()
-                                st.session_state.user_email = signup_email.lower().strip()
-                                
-                                st.success("🎉 Account created successfully! Welcome to AspirePath!")
-                                st.balloons()
-                                st.rerun()  # Refresh to show authenticated menu
-                            else:
-                                st.error(f"❌ {message}")
-                        except Exception as e:
-                            st.error(f"❌ An error occurred while creating your account. Please try again.")
-        
-        # Close the container div
-        st.markdown("</div>", unsafe_allow_html=True)
-    
-    # Force styling with JavaScript - Remove problematic closing div
-    st.markdown("""
-    <script>
-    // Force dark styling on all elements
-    setTimeout(function() {
-        const elements = document.querySelectorAll('*');
-        elements.forEach(el => {
-            if (el.style) {
-                if (el.style.backgroundColor === 'white' || el.style.backgroundColor === '#ffffff' || 
-                    el.style.backgroundColor === 'rgb(255, 255, 255)') {
-                    el.style.backgroundColor = 'transparent';
-                }
-                if (el.style.color === 'black' || el.style.color === '#000000' || 
-                    el.style.color === 'rgb(0, 0, 0)') {
-                    el.style.color = 'white';
-                }
-            }
-        });
-    }, 100);
-    </script>
-    """, unsafe_allow_html=True)
+    # Use the new simplified authentication system
+    auth_system = get_auth_system()
+    auth_system.render_auth_page()
 
 # Home Section - Clean and properly formatted
 if page_clean == "Home":
