@@ -28,6 +28,10 @@ try:
 except ImportError as e:
     print(f"Smart quiz not available: {e}")
     SMART_QUIZ_AVAILABLE = False
+    
+# --- FIX: Initialize session_state['resumes'] ---
+if 'resumes' not in st.session_state:
+     st.session_state.resumes = []
 import hashlib
 import requests
 import json
