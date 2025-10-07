@@ -932,14 +932,6 @@ elif page_clean == "Skill Quiz & Resume Upload":
             - Ensure your resume contains clear skill listings
             - Alternative: Use manual entry below
             """)
-                        skills_display = ", ".join(user_skills)
-                        st.markdown(f"**Detected Skills:** {skills_display}")
-                else:
-                    st.warning("⚠️ No skills could be extracted from your resume. Please try manual entry.")
-                    
-            except Exception as e:
-                st.error(f"❌ Error processing resume: {str(e)}")
-                st.info("Please try uploading a different file or use manual skill entry.")
 
     with col2:
         st.subheader("✏️ Manual Entry")
